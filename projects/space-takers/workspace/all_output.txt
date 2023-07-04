@@ -1,4 +1,6 @@
-To make the player only shoot 1 bullet when they press space bar, we can modify the `Player` class to only spawn a bullet if there are no bullets currently on the screen.
+The error message is indicating that the `Bullet` class is expecting an additional argument 'y' in its `__init__` method. This argument is likely used to set the initial y-coordinate of the bullet when it is created. 
+
+To fix this, we need to pass the y-coordinate of the player to the `Bullet` class when we create a new bullet. This can be done by modifying the `Player` class as follows:
 
 player.py
 ```python
@@ -25,7 +27,7 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_DOWN]:
             self.rect.y += 2
         if keys[pygame.K_SPACE] and not self.bullets:  # Only spawn a bullet if there are no bullets on the screen
-            bullet = Bullet(self)
+            bullet = Bullet(self, self.rect.centery)  # Pass the y-coordinate of the player to the Bullet class
             self.bullets.add(bullet)
 
     def draw(self, screen):
@@ -33,58 +35,4 @@ class Player(pygame.sprite.Sprite):
         self.bullets.draw(screen)
 ```
 
-To display the score in the top right, we can add a `score` attribute to the `Game` class and increment it whenever an enemy is killed. We can then draw the score on the screen in the `run` method.
-
-game.py
-```python
-import pygame
-from player import Player
-from enemy import Enemy
-
-class Game:
-    def __init__(self):
-        pygame.init()
-        self.screen = pygame.display.set_mode((800, 600))
-        self.clock = pygame.time.Clock()
-        self.player = Player(self)
-        self.enemies = pygame.sprite.Group()
-        self.score = 0  # Add score attribute
-        self.font = pygame.font.Font(None, 36)  # Font to display the score
-
-    def run(self):
-        running = True
-        while running:
-            self.clock.tick(60)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-
-            self.player.update()
-            self.player.bullets.update()
-            self.enemies.update()
-
-            # Collision detection
-            for bullet in pygame.sprite.groupcollide(self.player.bullets, self.enemies, True, True):
-                self.score += 1  # Increment score when an enemy is killed
-
-            if pygame.sprite.spritecollideany(self.player, self.enemies):
-                running = False  # End the game if the player collides with an enemy
-
-            self.screen.fill((0, 0, 0))
-            self.player.draw(self.screen)
-            self.enemies.draw(self.screen)
-
-            # Draw score
-            score_text = self.font.render(f'Score: {self.score}', True, (255, 255, 255))
-            self.screen.blit(score_text, (650, 10))
-
-            pygame.display.flip()
-
-        pygame.quit()
-
-    def spawn_enemy(self):
-        enemy = Enemy(self)
-        self.enemies.add(enemy)
-```
-
-In the `Player` class, we're checking if `self.bullets` is empty before spawning a bullet. In the `Game` class, we're incrementing `self.score` whenever an enemy is killed and drawing the score on the screen using `pygame.font.Font.render` and `pygame.Surface.blit`.
+In the `update` method of the `Player` class, we are now passing `self.rect.centery` (the y-coordinate of the player) to the `Bullet` class when we create a new bullet. This will ensure that the bullet is created at the correct position on the screen.

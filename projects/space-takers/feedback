@@ -1,2 +1,10 @@
-- Make the player only shoot 1 bullet when they press space bar
-- display the score in the top right
+Traceback (most recent call last):
+  File "D:\Users\jordan\Desktop\temp\bleh\gpt-engineer\projects\space-takers\workspace\main.py", line 11, in <module>
+    main()
+  File "D:\Users\jordan\Desktop\temp\bleh\gpt-engineer\projects\space-takers\workspace\main.py", line 7, in main
+    game.run()
+  File "D:\Users\jordan\Desktop\temp\bleh\gpt-engineer\projects\space-takers\workspace\game.py", line 27, in run
+    self.player.update()
+  File "D:\Users\jordan\Desktop\temp\bleh\gpt-engineer\projects\space-takers\workspace\player.py", line 24, in update
+    bullet = Bullet(self)
+TypeError: Bullet.__init__() missing 1 required positional argument: 'y'
