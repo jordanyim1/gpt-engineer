@@ -1,1 +1,2 @@
-instead of a png, Use a blue circle for the player, a red square for enemies, and a small yellow circle for bullets
+- add code to spawn enemies over time on the right of the screen.
+- Make the player spawn on the left of the screen.

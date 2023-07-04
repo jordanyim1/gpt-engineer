@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
         self.game = game
         self.image = pygame.Surface((50, 50), pygame.SRCALPHA)
         pygame.draw.circle(self.image, (0, 0, 255), (25, 25), 25)
-        self.rect = self.image.get_rect(center=(400, 300))
+        self.rect = self.image.get_rect(center=(50, 300))  # Player spawns on the left of the screen
         self.bullets = pygame.sprite.Group()
 
     def handle_event(self, event):

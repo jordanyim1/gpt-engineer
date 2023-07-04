@@ -1,4 +1,49 @@
-Sure, we can use Pygame's drawing functions to create simple shapes for the player, enemies, and bullets. Here's how we can modify the `Player`, `Enemy`, and `Bullet` classes:
+Sure, let's modify the `Game` class to spawn enemies over time and place the player on the left side of the screen.
+
+game.py
+```python
+import pygame
+from player import Player
+from enemy import Enemy
+
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((800, 600))
+        self.clock = pygame.time.Clock()
+        self.player = Player(self)
+        self.enemies = pygame.sprite.Group()
+        self.spawn_enemy_event = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.spawn_enemy_event, 1000)  # Spawn enemy every 1 second
+
+    def run(self):
+        running = True
+        while running:
+            self.clock.tick(60)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == self.spawn_enemy_event:
+                    self.spawn_enemy()
+            self.player.update()
+            self.enemies.update()
+            self.draw()
+        pygame.quit()
+
+    def draw(self):
+        self.screen.fill((0, 0, 0))
+        self.player.draw(self.screen)
+        self.enemies.draw(self.screen)
+        pygame.display.flip()
+
+    def spawn_enemy(self):
+        enemy = Enemy()
+        self.enemies.add(enemy)
+
+if __name__ == "__main__":
+    game = Game()
+    game.run()
+```
 
 player.py
 ```python
@@ -11,38 +56,12 @@ class Player(pygame.sprite.Sprite):
         self.game = game
         self.image = pygame.Surface((50, 50), pygame.SRCALPHA)
         pygame.draw.circle(self.image, (0, 0, 255), (25, 25), 25)
-        self.rect = self.image.get_rect(center=(400, 300))
+        self.rect = self.image.get_rect(center=(50, 300))  # Player spawns on the left of the screen
         self.bullets = pygame.sprite.Group()
 
     # ... rest of the class remains the same ...
 ```
 
-enemy.py
-```python
-import pygame
+In the `Game` class, we're creating a custom event `self.spawn_enemy_event` that is triggered every 1 second (1000 milliseconds). When this event is triggered, we call the `spawn_enemy` method to create a new `Enemy` instance and add it to the `self.enemies` group.
 
-class Enemy(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.Surface((50, 50))
-        pygame.draw.rect(self.image, (255, 0, 0), (0, 0, 50, 50))
-        self.rect = self.image.get_rect(topleft=(800, 300))
-
-    # ... rest of the class remains the same ...
-```
-
-bullet.py
-```python
-import pygame
-
-class Bullet(pygame.sprite.Sprite):
-    def __init__(self, player):
-        super().__init__()
-        self.image = pygame.Surface((10, 10), pygame.SRCALPHA)
-        pygame.draw.circle(self.image, (255, 255, 0), (5, 5), 5)
-        self.rect = self.image.get_rect(center=player.rect.center)
-
-    # ... rest of the class remains the same ...
-```
-
-In the `Player` and `Bullet` classes, we're using `pygame.SRCALPHA` to make the surface transparent, so that the circle doesn't have a square background. In the `Enemy` class, we're drawing a red square on the surface. The `(0, 0, 255)`, `(255, 0, 0)`, and `(255, 255, 0)` tuples represent the colors blue, red, and yellow in RGB format, respectively.
+In the `Player` class, we're changing the initial position of the player to `(50, 300)`, which is on the left side of the screen.

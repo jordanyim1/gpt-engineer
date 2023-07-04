@@ -1,3 +1,3 @@
-Sure, we can use Pygame's drawing functions to create simple shapes for the player, enemies, and bullets. Here's how we can modify the `Player`, `Enemy`, and `Bullet` classes:
+Sure, let's modify the `Game` class to spawn enemies over time and place the player on the left side of the screen.
 
-player.py
+game.py
