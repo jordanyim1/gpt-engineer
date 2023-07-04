@@ -9,6 +9,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.player = Player(self)
         self.enemies = pygame.sprite.Group()
+        self.spawn_enemy_event = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.spawn_enemy_event, 1000)  # Spawn enemy every 1 second
         self.score = 0  # Add score attribute
         self.font = pygame.font.Font(None, 36)  # Font to display the score
 
