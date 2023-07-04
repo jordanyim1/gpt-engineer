@@ -9,6 +9,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.player = Player(self)
         self.enemies = pygame.sprite.Group()
+        self.spawn_enemy_event = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.spawn_enemy_event, 1000)  # Spawn enemy every 1 second
 
     def run(self):
         running = True
@@ -17,6 +19,8 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                elif event.type == self.spawn_enemy_event:
+                    self.spawn_enemy()
 
             self.player.update()
             self.player.bullets.update()
@@ -37,3 +41,7 @@ class Game:
     def spawn_enemy(self):
         enemy = Enemy(self)
         self.enemies.add(enemy)
+
+if __name__ == "__main__":
+    game = Game()
+    game.run()

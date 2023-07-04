@@ -11,7 +11,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(800, random.randint(50, 550)))
         self.x = self.rect.x
         self.y = self.rect.y
-        self.amplitude = random.randint(20, 100)
+        self.amplitude = random.randint(1, 5)
         self.frequency = random.uniform(0.01, 0.05)
 
     def update(self):
