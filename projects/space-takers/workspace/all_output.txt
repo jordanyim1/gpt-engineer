@@ -1,49 +1,4 @@
-Sure, let's modify the `Game` class to spawn enemies over time and place the player on the left side of the screen.
-
-game.py
-```python
-import pygame
-from player import Player
-from enemy import Enemy
-
-class Game:
-    def __init__(self):
-        pygame.init()
-        self.screen = pygame.display.set_mode((800, 600))
-        self.clock = pygame.time.Clock()
-        self.player = Player(self)
-        self.enemies = pygame.sprite.Group()
-        self.spawn_enemy_event = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.spawn_enemy_event, 1000)  # Spawn enemy every 1 second
-
-    def run(self):
-        running = True
-        while running:
-            self.clock.tick(60)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == self.spawn_enemy_event:
-                    self.spawn_enemy()
-            self.player.update()
-            self.enemies.update()
-            self.draw()
-        pygame.quit()
-
-    def draw(self):
-        self.screen.fill((0, 0, 0))
-        self.player.draw(self.screen)
-        self.enemies.draw(self.screen)
-        pygame.display.flip()
-
-    def spawn_enemy(self):
-        enemy = Enemy()
-        self.enemies.add(enemy)
-
-if __name__ == "__main__":
-    game = Game()
-    game.run()
-```
+I apologize for the oversight. Let's add the functionality to shoot bullets when the space bar is pressed. We need to modify the `Player` class to handle the space bar press event and create a `Bullet` instance.
 
 player.py
 ```python
@@ -59,9 +14,41 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(50, 300))  # Player spawns on the left of the screen
         self.bullets = pygame.sprite.Group()
 
-    # ... rest of the class remains the same ...
+    def update(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP]:
+            self.rect.y -= 5
+        if keys[pygame.K_DOWN]:
+            self.rect.y += 5
+        if keys[pygame.K_SPACE]:
+            self.shoot()
+
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)
+        self.bullets.draw(surface)
+
+    def shoot(self):
+        bullet = Bullet(self.rect.centerx, self.rect.top)
+        self.bullets.add(bullet)
 ```
 
-In the `Game` class, we're creating a custom event `self.spawn_enemy_event` that is triggered every 1 second (1000 milliseconds). When this event is triggered, we call the `spawn_enemy` method to create a new `Enemy` instance and add it to the `self.enemies` group.
+bullet.py
+```python
+import pygame
 
-In the `Player` class, we're changing the initial position of the player to `(50, 300)`, which is on the left side of the screen.
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.Surface((10, 20))
+        self.image.fill((255, 255, 255))
+        self.rect = self.image.get_rect(center=(x, y))
+
+    def update(self):
+        self.rect.x += 5
+        if self.rect.x > 800:
+            self.kill()
+```
+
+In the `Player` class, we're checking if the space bar is pressed in the `update` method. If it is, we call the `shoot` method to create a new `Bullet` instance and add it to the `self.bullets` group.
+
+In the `Bullet` class, we're creating a white rectangle as the bullet image. In the `update` method, we're moving the bullet to the right by 5 pixels every frame. If the bullet goes off the screen, we remove it from all groups by calling `self.kill()`.

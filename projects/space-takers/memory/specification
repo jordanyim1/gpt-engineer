@@ -1,0 +1,37 @@
+Program Specification:
+
+The program is a side-scrolling shooter game. The player controls a character that can move up and down on the left side of the screen, and can shoot projectiles towards the right side of the screen. Enemies appear from the right side of the screen and move towards the left. The player's goal is to shoot the enemies before they reach the left side of the screen. The player's score increases for each enemy they shoot.
+
+Features:
+
+1. Player Movement: The player can move up and down using the arrow keys. The player's character cannot move off the screen.
+
+2. Shooting: The player can shoot projectiles by pressing the space bar. The projectiles move from the left side of the screen to the right.
+
+3. Enemies: Enemies appear from the right side of the screen and move towards the left. The frequency and speed of the enemies increase as the player's score increases.
+
+4. Scoring: The player's score increases for each enemy they shoot. The score does not decrease if an enemy reaches the left side of the screen, but the game ends.
+
+5. Game Over: The game ends if an enemy reaches the left side of the screen. The player's final score is displayed.
+
+Core Classes, Functions, and Methods:
+
+1. Player Class: Represents the player's character. Has methods for moving up and down, and for shooting projectiles.
+
+2. Projectile Class: Represents the projectiles shot by the player. Has a method for moving towards the right side of the screen.
+
+3. Enemy Class: Represents the enemies. Has a method for moving towards the left side of the screen.
+
+4. Game Class: Controls the game logic. Has methods for creating enemies, checking for collisions between projectiles and enemies, updating the score, and ending the game.
+
+5. Main Function: The entry point of the program. Creates an instance of the Game class and starts the game loop.
+
+6. Handle Input Function: Checks for user input and calls the appropriate methods of the Player class.
+
+7. Update Function: Called each frame of the game loop. Calls the update methods of the Player, Projectile, and Enemy classes, and checks for game over conditions.
+
+8. Render Function: Called each frame of the game loop. Draws the current state of the game to the screen.
+
+9. Collision Detection Function: Checks for collisions between projectiles and enemies. If a collision is detected, the enemy and the projectile are removed from the game and the score is updated.
+
+10. Score Class: Keeps track of the player's score. Has methods for increasing the score and displaying the final score when the game ends.

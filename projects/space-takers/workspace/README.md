@@ -1,3 +1,3 @@
-Sure, let's modify the `Game` class to spawn enemies over time and place the player on the left side of the screen.
+I apologize for the oversight. Let's add the functionality to shoot bullets when the space bar is pressed. We need to modify the `Player` class to handle the space bar press event and create a `Bullet` instance.
 
-game.py
+player.py

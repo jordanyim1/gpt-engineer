@@ -1,5 +1,5 @@
-python3 -m venv venv
-source venv/bin/activate
-pip install pygame
+python3 -m venv env
+source env/bin/activate
+pip install -r requirements.txt
 
-python game.py
+python main.py
