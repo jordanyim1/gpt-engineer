@@ -1,3 +1,3 @@
-I apologize for the oversight. Let's add the functionality to shoot bullets when the space bar is pressed. We need to modify the `Player` class to handle the space bar press event and create a `Bullet` instance.
+To make the enemies appear in more interesting patterns and different y values, we can modify the `Enemy` class to spawn at random y values and move in a sinusoidal pattern.
 
-player.py
+enemy.py

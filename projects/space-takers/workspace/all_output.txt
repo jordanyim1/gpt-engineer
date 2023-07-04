@@ -1,54 +1,76 @@
-I apologize for the oversight. Let's add the functionality to shoot bullets when the space bar is pressed. We need to modify the `Player` class to handle the space bar press event and create a `Bullet` instance.
+To make the enemies appear in more interesting patterns and different y values, we can modify the `Enemy` class to spawn at random y values and move in a sinusoidal pattern.
 
-player.py
+enemy.py
 ```python
 import pygame
-from bullet import Bullet
+import random
+import math
 
-class Player(pygame.sprite.Sprite):
+class Enemy(pygame.sprite.Sprite):
     def __init__(self, game):
         super().__init__()
         self.game = game
         self.image = pygame.Surface((50, 50), pygame.SRCALPHA)
-        pygame.draw.circle(self.image, (0, 0, 255), (25, 25), 25)
-        self.rect = self.image.get_rect(center=(50, 300))  # Player spawns on the left of the screen
-        self.bullets = pygame.sprite.Group()
+        pygame.draw.circle(self.image, (255, 0, 0), (25, 25), 25)
+        self.rect = self.image.get_rect(center=(800, random.randint(50, 550)))
+        self.x = self.rect.x
+        self.y = self.rect.y
+        self.amplitude = random.randint(20, 100)
+        self.frequency = random.uniform(0.01, 0.05)
 
     def update(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_UP]:
-            self.rect.y -= 5
-        if keys[pygame.K_DOWN]:
-            self.rect.y += 5
-        if keys[pygame.K_SPACE]:
-            self.shoot()
-
-    def draw(self, surface):
-        surface.blit(self.image, self.rect)
-        self.bullets.draw(surface)
-
-    def shoot(self):
-        bullet = Bullet(self.rect.centerx, self.rect.top)
-        self.bullets.add(bullet)
-```
-
-bullet.py
-```python
-import pygame
-
-class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
-        self.image = pygame.Surface((10, 20))
-        self.image.fill((255, 255, 255))
-        self.rect = self.image.get_rect(center=(x, y))
-
-    def update(self):
-        self.rect.x += 5
-        if self.rect.x > 800:
+        self.x -= 2
+        self.y += self.amplitude * math.sin(self.frequency * self.x)
+        self.rect.center = (self.x, self.y)
+        if self.rect.right < 0:
             self.kill()
 ```
 
-In the `Player` class, we're checking if the space bar is pressed in the `update` method. If it is, we call the `shoot` method to create a new `Bullet` instance and add it to the `self.bullets` group.
+To handle collisions between enemies and bullets, and enemies and the player, we can add collision detection in the `Game` class.
 
-In the `Bullet` class, we're creating a white rectangle as the bullet image. In the `update` method, we're moving the bullet to the right by 5 pixels every frame. If the bullet goes off the screen, we remove it from all groups by calling `self.kill()`.
+game.py
+```python
+import pygame
+from player import Player
+from enemy import Enemy
+
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((800, 600))
+        self.clock = pygame.time.Clock()
+        self.player = Player(self)
+        self.enemies = pygame.sprite.Group()
+
+    def run(self):
+        running = True
+        while running:
+            self.clock.tick(60)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
+            self.player.update()
+            self.player.bullets.update()
+            self.enemies.update()
+
+            # Collision detection
+            pygame.sprite.groupcollide(self.player.bullets, self.enemies, True, True)
+            if pygame.sprite.spritecollideany(self.player, self.enemies):
+                running = False  # End the game if the player collides with an enemy
+
+            self.screen.fill((0, 0, 0))
+            self.player.draw(self.screen)
+            self.enemies.draw(self.screen)
+            pygame.display.flip()
+
+        pygame.quit()
+
+    def spawn_enemy(self):
+        enemy = Enemy(self)
+        self.enemies.add(enemy)
+```
+
+In the `Enemy` class, we're generating a random amplitude and frequency for the sinusoidal movement. In the `update` method, we're updating the y value based on the sinusoidal function and moving the enemy to the left.
+
+In the `Game` class, we're using `pygame.sprite.groupcollide` to detect collisions between bullets and enemies. If a collision is detected, both the bullet and the enemy are removed. We're also using `pygame.sprite.spritecollideany` to detect collisions between the player and enemies. If a collision is detected, we end the game.
