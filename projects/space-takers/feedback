@@ -1,2 +1,2 @@
-- Make the enemies appear in more interesting patterns and different y values
-- handle collisions between enemies and bullets, and enemies and the player
+- Make the player only shoot 1 bullet when they press space bar
+- display the score in the top right

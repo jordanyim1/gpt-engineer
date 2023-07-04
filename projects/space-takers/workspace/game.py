@@ -9,8 +9,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.player = Player(self)
         self.enemies = pygame.sprite.Group()
-        self.spawn_enemy_event = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.spawn_enemy_event, 1000)  # Spawn enemy every 1 second
+        self.score = 0  # Add score attribute
+        self.font = pygame.font.Font(None, 36)  # Font to display the score
 
     def run(self):
         running = True
@@ -27,13 +27,20 @@ class Game:
             self.enemies.update()
 
             # Collision detection
-            pygame.sprite.groupcollide(self.player.bullets, self.enemies, True, True)
+            for bullet in pygame.sprite.groupcollide(self.player.bullets, self.enemies, True, True):
+                self.score += 1  # Increment score when an enemy is killed
+
             if pygame.sprite.spritecollideany(self.player, self.enemies):
                 running = False  # End the game if the player collides with an enemy
 
             self.screen.fill((0, 0, 0))
             self.player.draw(self.screen)
             self.enemies.draw(self.screen)
+
+            # Draw score
+            score_text = self.font.render(f'Score: {self.score}', True, (255, 255, 255))
+            self.screen.blit(score_text, (650, 10))
+
             pygame.display.flip()
 
         pygame.quit()
