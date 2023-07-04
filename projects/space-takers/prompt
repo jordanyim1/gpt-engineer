@@ -1,0 +1,2 @@
+create a side scrolling shooter game.  The player should be able to move with the arrow keys and shoot with space bar.  Enemies should appear from the right of the screen and move towards the left.
+The player should be able to shoot the enemies to get the highest score.

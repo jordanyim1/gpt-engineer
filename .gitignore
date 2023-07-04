@@ -47,7 +47,6 @@ todo
 scratchpad
 
 # Ignore GPT Engineer files
-projects
 !projects/example
 
 # Pyenv
@@ -58,3 +57,4 @@ benchmark
 !benchmark/*/prompt
 
 .gpte_consent
+projects/space-takers/workspace/env/
