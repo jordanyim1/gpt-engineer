@@ -1,71 +1,4 @@
-We will be using Python and the Pygame library to create this game. The core classes and functions will be:
-
-1. `Game`: This class will handle the game loop, events, and rendering.
-2. `Player`: This class will represent the player's spaceship. It will handle movement and shooting.
-3. `Enemy`: This class will represent the enemy spaceships. It will handle movement and collision detection.
-4. `Bullet`: This class will represent the bullets shot by the player. It will handle movement and collision detection.
-5. `Score`: This class will keep track of the player's score.
-
-Now, let's start with the entry point file, `main.py`.
-
-main.py
-```python
-import pygame
-from game import Game
-
-def main():
-    pygame.init()
-    game = Game()
-    game.run()
-    pygame.quit()
-
-if __name__ == "__main__":
-    main()
-```
-
-Next, we will create the `game.py` file, which contains the `Game` class.
-
-game.py
-```python
-import pygame
-from player import Player
-from enemy import Enemy
-from score import Score
-
-class Game:
-    def __init__(self):
-        self.screen = pygame.display.set_mode((800, 600))
-        self.clock = pygame.time.Clock()
-        self.player = Player(self)
-        self.enemies = pygame.sprite.Group()
-        self.score = Score()
-
-    def run(self):
-        running = True
-        while running:
-            self.clock.tick(60)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                self.player.handle_event(event)
-            self.update()
-            self.draw()
-        pygame.quit()
-
-    def update(self):
-        self.player.update()
-        self.enemies.update()
-        self.score.update(self.player, self.enemies)
-
-    def draw(self):
-        self.screen.fill((0, 0, 0))
-        self.player.draw(self.screen)
-        self.enemies.draw(self.screen)
-        self.score.draw(self.screen)
-        pygame.display.flip()
-```
-
-Next, we will create the `player.py` file, which contains the `Player` class.
+Sure, we can use Pygame's drawing functions to create simple shapes for the player, enemies, and bullets. Here's how we can modify the `Player`, `Enemy`, and `Bullet` classes:
 
 player.py
 ```python
@@ -76,37 +9,13 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, game):
         super().__init__()
         self.game = game
-        self.image = pygame.image.load('player.png')
+        self.image = pygame.Surface((50, 50), pygame.SRCALPHA)
+        pygame.draw.circle(self.image, (0, 0, 255), (25, 25), 25)
         self.rect = self.image.get_rect(center=(400, 300))
         self.bullets = pygame.sprite.Group()
 
-    def handle_event(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                self.shoot()
-
-    def update(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            self.rect.x -= 5
-        if keys[pygame.K_RIGHT]:
-            self.rect.x += 5
-        if keys[pygame.K_UP]:
-            self.rect.y -= 5
-        if keys[pygame.K_DOWN]:
-            self.rect.y += 5
-        self.bullets.update()
-
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
-        self.bullets.draw(screen)
-
-    def shoot(self):
-        bullet = Bullet(self)
-        self.bullets.add(bullet)
+    # ... rest of the class remains the same ...
 ```
-
-Next, we will create the `enemy.py` file, which contains the `Enemy` class.
 
 enemy.py
 ```python
@@ -115,16 +24,12 @@ import pygame
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('enemy.png')
+        self.image = pygame.Surface((50, 50))
+        pygame.draw.rect(self.image, (255, 0, 0), (0, 0, 50, 50))
         self.rect = self.image.get_rect(topleft=(800, 300))
 
-    def update(self):
-        self.rect.x -= 3
-        if self.rect.right < 0:
-            self.kill()
+    # ... rest of the class remains the same ...
 ```
-
-Next, we will create the `bullet.py` file, which contains the `Bullet` class.
 
 bullet.py
 ```python
@@ -133,33 +38,11 @@ import pygame
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, player):
         super().__init__()
-        self.image = pygame.image.load('bullet.png')
+        self.image = pygame.Surface((10, 10), pygame.SRCALPHA)
+        pygame.draw.circle(self.image, (255, 255, 0), (5, 5), 5)
         self.rect = self.image.get_rect(center=player.rect.center)
 
-    def update(self):
-        self.rect.x += 5
-        if self.rect.left > 800:
-            self.kill()
+    # ... rest of the class remains the same ...
 ```
 
-Finally, we will create the `score.py` file, which contains the `Score` class.
-
-score.py
-```python
-import pygame
-
-class Score:
-    def __init__(self):
-        self.font = pygame.font.Font(None, 36)
-        self.score = 0
-
-    def update(self, player, enemies):
-        hits = pygame.sprite.groupcollide(player.bullets, enemies, True, True)
-        self.score += len(hits) * 10
-
-    def draw(self, screen):
-        score_text = self.font.render(f'Score: {self.score}', True, (255, 255, 255))
-        screen.blit(score_text, (10, 10))
-```
-
-Please note that you will need to replace `'player.png'`, `'enemy.png'`, and `'bullet.png'` with the paths to your own image files. Also, you will need to add code to spawn enemies over time.
+In the `Player` and `Bullet` classes, we're using `pygame.SRCALPHA` to make the surface transparent, so that the circle doesn't have a square background. In the `Enemy` class, we're drawing a red square on the surface. The `(0, 0, 255)`, `(255, 0, 0)`, and `(255, 255, 0)` tuples represent the colors blue, red, and yellow in RGB format, respectively.
